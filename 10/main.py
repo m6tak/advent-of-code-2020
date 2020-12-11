@@ -21,6 +21,9 @@ def partI(input_data):
 
   return (diffrences.count(3) + 1) * diffrences.count(1)
 
+def partII(input_data):
+  
+
 def main():
   lines = open('in.txt').readlines()
   adapters = [int(line) for line in lines]
