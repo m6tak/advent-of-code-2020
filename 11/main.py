@@ -30,6 +30,8 @@ def partI(input_data):
         adjecent_taken = 0
         if input_data[y][x] == '.': continue
 
+        #print(f'xy({x},{y}): {input_data[y][x]}')
+
         adjecent_empty += int(input_data[y + 1][x - 1] == 'L') + int(input_data[y + 1][x] == 'L') + int(input_data[y+1][x+1] == 'L')
         adjecent_empty += int(input_data[y][x - 1] == 'L')                  +               int(input_data[y][x + 1] == 'L')
         adjecent_empty += int(input_data[y - 1][x - 1] == 'L') + int(input_data[y - 1][x] == 'L') + int(input_data[y-1][x+1] == 'L')
@@ -55,7 +57,72 @@ def partI(input_data):
         changes += 1
         continue
 
-    #print(f'Iteration: {iteration} - {changes} changes')
+    print(f'Iteration: {iteration} - {changes} changes')
+    iteration += 1
+
+  taken_count = 0
+  for row in input_data:
+    for seat in row:
+      if seat == '#': taken_count += 1
+  
+  return taken_count
+
+def partII(input_data):
+  changes = 0
+  iteration = 0
+  first = True
+  while first or changes > 0:
+    first = False
+    states = []
+    changes = 0
+    for y in range(len(input_data)):
+      for x in range(len(input_data[y])):
+        adjecent_empty = 0
+        adjecent_taken = 0
+        if input_data[y][x] == '.': continue
+
+        if findFirstSeat(input_data, x, y, 1, 0) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, 1, 0) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, -1, 0) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, -1, 0) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, 0, 1) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, 0, 1) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, 0, -1) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, 0, -1) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, 1, 1) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, 1, 1) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, -1, 1) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, -1, 1) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, 1, -1) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, 1, -1) == 'L': adjecent_empty += 1
+
+        if findFirstSeat(input_data, x, y, -1, -1) == '#': adjecent_taken += 1
+        elif findFirstSeat(input_data, x, y, -1, -1) == 'L': adjecent_empty += 1
+
+        states.append({'pos': f'{x}:{y}', 'adjecent_empty': adjecent_empty, 'adjecent_taken': adjecent_taken})
+
+
+    for state in states:
+      x = int(state['pos'].split(':')[0])
+      y = int(state['pos'].split(':')[1])
+
+      if input_data[y][x] == 'L' and state['adjecent_taken'] == 0:
+        input_data[y][x] = '#'
+        changes += 1
+        continue
+
+      if input_data[y][x] == '#' and state['adjecent_taken'] >= 5:
+        input_data[y][x] = 'L'
+        changes += 1
+        continue
+
+    print(f'Iteration: {iteration} - {changes} changes')
     iteration += 1
 
   taken_count = 0
@@ -90,10 +157,10 @@ def main():
     chars.append('.')
   input_data.append(chars)
 
-  print(partI(input_data))
+  #printBoard(input_data)
 
-
-
+  #print(partI(input_data))
+  print(partII(input_data))
 
 if __name__ == "__main__":
   main()
